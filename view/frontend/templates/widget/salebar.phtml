@@ -48,14 +48,12 @@ if ($isClickable) {
     <?php } ?>
 </div>
 
-<?php if($hasTimer): ?>
-    <script type="text/x-magento-init">
-        {
-            ".cs-salebar-widget": {
-                "mgsSalebarWidget": {
-                    "timerDate": <?= $timerDate; ?>
-                }
+<script type="text/x-magento-init">
+    {
+        ".cs-salebar-widget": {
+            "mgsSalebarWidget": {
+                "timerDate": <?= $hasTimer ? $timerDate : 0; ?>
             }
         }
-    </script>
-<?php endif; ?>
+    }
+</script>
