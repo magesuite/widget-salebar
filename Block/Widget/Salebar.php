@@ -6,7 +6,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 {
     const TIMER_KEYWORD = '%TIMER%';
 
-    const TIMER_DIV_CLASS = '<span class="cs-salebar__countdown"></span>';
+    const TIMER_DIV_CLASS = '<span class="cs-salebar-widget__countdown"></span>';
 
     protected $_template = 'widget/salebar.phtml';
 

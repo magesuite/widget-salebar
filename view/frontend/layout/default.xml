@@ -2,7 +2,7 @@
     <body>
         <!-- Container for Salebar Widget -->
         <referenceContainer name="page.wrapper">
-            <container name="salebar.wrapper" label="Header - Salebar Container" htmlTag="div" htmlClass="cs-container cs-container--salebar" before="-"/>
+            <container name="salebar.wrapper" label="Header - Salebar Container" htmlTag="div" htmlClass="cs-container cs-container--salebar-widget" before="-"/>
         </referenceContainer>
     </body>
 </page>

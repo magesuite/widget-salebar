@@ -13,16 +13,18 @@ $isTimerProvided = $block->hasData('salebar_timer');
 $timerDate = $block->getFinalTime();
 $hasTimer = $isTimerEnabled && $isTimerProvided && $timerDate;
 
-$cssClass = 'cs-salebar';
+$cssClass = 'cs-salebar-widget';
 if (!$hasTimer) {
     $cssClass .= ' '.$cssClass.'--loaded';
 }
 
-$cssContentClass = 'cs-salebar__content';
+$cssContentClass = 'cs-salebar-widget__content';
 if ($isClickable) {
     $cssContentClass .= ' '.$cssContentClass.'--clickable';
 }
 ?>
+
+<link rel="stylesheet" href="<?= $this->getViewFileUrl('css/salebar-widget.css') ?>"/><script>/* defer-ignore */</script>
 
 <div class="<?= $cssClass; ?>">
     <?php if ($isClickable && $clickableURL) { ?>
@@ -32,21 +34,13 @@ if ($isClickable) {
     <?php } ?>
 
     <?php if ($hasTimer) { ?>
-        <span class="cs-salebar__text cs-salebar__countdown-active"><?= $text; ?></span>
+        <span class="cs-salebar-widget__text cs-salebar-widget__countdown-active"><?= $text; ?></span>
         <?php if ($textAfterCountdown) { ?>
-        <span class="cs-salebar__text cs-salebar__countdown-finished"><?= $textAfterCountdown; ?></span>
+        <span class="cs-salebar-widget__text cs-salebar-widget__countdown-finished"><?= $textAfterCountdown; ?></span>
         <?php } ?>
     <?php } else { ?>
-        <span class="cs-salebar__text"><?= $text; ?></span>
+        <span class="cs-salebar-widget__text"><?= $text; ?></span>
     <?php } ?>
-        <?= $this->getLayout()
-            ->createBlock('MageSuite\ThemeHelpers\Block\Icon')
-            ->setIconUrl('images/icons/salebar/icon-arrow.svg')
-            ->setCssClass('cs-salebar__arrow')
-            ->setInlined(true)
-            ->setLazyLoaded(false)
-            ->toHtml();
-        ?>
     <?php if ($isClickable && $clickableURL) { ?>
         </a>
     <?php } else { ?>
@@ -57,8 +51,8 @@ if ($isClickable) {
 <?php if($hasTimer): ?>
     <script type="text/x-magento-init">
         {
-            ".cs-salebar": {
-                "csSalebar": {
+            ".cs-salebar-widget": {
+                "mgsSalebarWidget": {
                     "timerDate": <?= $timerDate; ?>
                 }
             }

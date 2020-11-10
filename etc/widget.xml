@@ -10,6 +10,18 @@
                 <description>Use %TIMER% to insert countdown timer.</description>
                 <block class="MageSuite\WidgetSalebar\Block\Widget\Salebar\Text" />
             </parameter>
+            <parameter name="background_color" sort_order="40" visible="true" xsi:type="text">
+                <label>Background color</label>
+                <description>
+                    <![CDATA[Use CSS hex value for background-color, example: #ffffff]]>
+                </description>
+            </parameter>
+            <parameter name="text_color" sort_order="41" visible="true" xsi:type="text">
+                <label>Text color</label>
+                <description>
+                    <![CDATA[Use CSS hex value for text-color, example: #ffffff]]>
+                </description>
+            </parameter>
             <parameter name="everything_linked" xsi:type="select" required="false" visible="true" sort_order="42">
                 <label translate="true">Make whole salebar clickable</label>
                 <options>
