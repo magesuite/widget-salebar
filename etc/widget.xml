@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget class="MageSuite\WidgetSalebar\Block\Widget\Salebar" id="salebar_widget">
+        <label>Salebar</label>
+        <description>Widget to display salebar - bar at the top of the site</description>
+        <parameters>
+            <parameter name="salebar_text" sort_order="30" visible="true" xsi:type="block">
+                <label>Text</label>
+                <description>Use %TIMER% to insert countdown timer.</description>
+                <block class="MageSuite\WidgetSalebar\Block\Widget\Salebar\Text" />
+            </parameter>
+            <parameter name="background_color" sort_order="40" visible="true" xsi:type="text">
+                <label>Background color</label>
+                <description>
+                    <![CDATA[Use CSS hex value for background-color, example: #ffffff]]>
+                </description>
+            </parameter>
+            <parameter name="text_color" sort_order="41" visible="true" xsi:type="text">
+                <label>Text color</label>
+                <description>
+                    <![CDATA[Use CSS hex value for text-color, example: #ffffff]]>
+                </description>
+            </parameter>
+            <parameter name="everything_linked" xsi:type="select" required="false" visible="true" sort_order="42">
+                <label translate="true">Make whole salebar clickable</label>
+                <options>
+                    <option name="yes" value="0">
+                        <label translate="true">No</label>
+                    </option>
+                    <option name="no" value="1">
+                        <label translate="true">Yes</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="url" sort_order="43" visible="true" xsi:type="text">
+                <label>URL</label>
+                <description>Where salebar should redirect</description>
+                <depends>
+                    <parameter name="everything_linked" value="1" />
+                </depends>
+            </parameter>
+            <parameter name="use_timer" xsi:type="select" required="false" visible="true" sort_order="45">
+                <label translate="true">Include timer</label>
+                <description translate="true">Enable timer support, use %TIMER% to include it in text.</description>
+                <options>
+                    <option name="yes" value="0">
+                        <label translate="true">No</label>
+                    </option>
+                    <option name="no" value="1">
+                        <label translate="true">Yes</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="salebar_timer" sort_order="50" visible="true" xsi:type="text">
+                <label>Timer ends on</label>
+                <description>Use format YYYY-MM-DD HH:MM:SS in CET timezone.</description>
+                <depends>
+                    <parameter name="use_timer" value="1" />
+                </depends>
+            </parameter>
+            <parameter name="salebar_timer_text_after_countdown" sort_order="60" visible="true" xsi:type="text">
+                <label>Text to show when timer runs out</label>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

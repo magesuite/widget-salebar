@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/view.xsd">
+    <vars module="MageSuite_WidgetSalebar">
+        <!-- Comma-separated query selectors for elements that have position:fixed and rely on salebar height -->
+        <var name="related_fixed_elements"></var>
+        <!-- breakpoint below which related_fixed_elements get position:fixed -->
+        <var name="fixed_elements_breakpoint">1024</var>
+    </vars>
+</view>

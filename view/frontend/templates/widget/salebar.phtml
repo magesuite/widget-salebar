@@ -1,0 +1,64 @@
+<?php
+$text = $block->getText();
+$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown');
+$relatedFixedElementsSelectors = $block->getVar('related_fixed_elements', 'MageSuite_WidgetSalebar');
+$fixedElementsBreakpoint = $block->getVar('fixed_elements_breakpoint', 'MageSuite_WidgetSalebar');
+
+$backgroundColor = $block->getData('background_color') ? $block->getData('background_color') : '#d63a47';
+$textColor = $block->getData('text_color') ? $block->getData('text_color') : '#fff';
+
+$isClickable = $block->getData('everything_linked');
+$clickableURL = $block->getData('url');
+
+$isTimerEnabled = $block->getData('use_timer');
+$isTimerProvided = $block->hasData('salebar_timer');
+$timerDate = $block->getFinalTime();
+$hasTimer = $isTimerEnabled && $isTimerProvided && $timerDate;
+
+$cssClass = 'cs-salebar-widget';
+if (!$hasTimer) {
+    $cssClass .= ' '.$cssClass.'--loaded';
+}
+
+$cssContentClass = 'cs-salebar-widget__content';
+if ($isClickable) {
+    $cssContentClass .= ' '.$cssContentClass.'--clickable';
+}
+?>
+
+<link rel="stylesheet" href="<?= $this->getViewFileUrl('css/salebar-widget.css') ?>"/><script>/* defer-ignore */</script>
+<div class="<?= $cssClass; ?>">
+    <?php if ($isClickable && $clickableURL) { ?>
+        <a href="<?= $clickableURL; ?>" class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
+    <?php } else { ?>
+        <div class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
+    <?php } ?>
+
+    <?php if ($hasTimer) { ?>
+        <span class="cs-salebar-widget__text cs-salebar-widget__countdown-active"><?= $text; ?></span>
+        <?php if ($textAfterCountdown) { ?>
+        <span class="cs-salebar-widget__text cs-salebar-widget__countdown-finished"><?= $textAfterCountdown; ?></span>
+        <?php } ?>
+    <?php } else { ?>
+        <span class="cs-salebar-widget__text"><?= $text; ?></span>
+    <?php } ?>
+    <?php if ($isClickable && $clickableURL) { ?>
+        </a>
+    <?php } else { ?>
+        </div>
+    <?php } ?>
+</div>
+
+<?php if(strlen($relatedFixedElementsSelectors) > 0 || $hasTimer): ?>
+<script type="text/x-magento-init">
+    {
+        ".cs-salebar-widget": {
+            "mgsSalebarWidget": {
+                "timerDate": <?= $hasTimer ? $timerDate : 0; ?>,
+                "relatedElementsSelectors": "<?= $relatedFixedElementsSelectors ?>",
+                "fixedElementsBreakpoint": "<?= $fixedElementsBreakpoint ?>"
+            }
+        }
+    }
+</script>
+<?php endif; ?>
