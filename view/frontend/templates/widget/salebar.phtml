@@ -1,6 +1,8 @@
 <?php
 $text = $block->getText();
 $textAfterCountdown = $block->getData('salebar_timer_text_after_countdown');
+$relatedFixedElementsSelectors = $block->getVar('related_fixed_elements', 'MageSuite_WidgetSalebar');
+$fixedElementsBreakpoint = $block->getVar('fixed_elements_breakpoint', 'MageSuite_WidgetSalebar');
 
 $backgroundColor = $block->getData('background_color') ? $block->getData('background_color') : '#d63a47';
 $textColor = $block->getData('text_color') ? $block->getData('text_color') : '#fff';
@@ -25,7 +27,6 @@ if ($isClickable) {
 ?>
 
 <link rel="stylesheet" href="<?= $this->getViewFileUrl('css/salebar-widget.css') ?>"/><script>/* defer-ignore */</script>
-
 <div class="<?= $cssClass; ?>">
     <?php if ($isClickable && $clickableURL) { ?>
         <a href="<?= $clickableURL; ?>" class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
@@ -48,12 +49,16 @@ if ($isClickable) {
     <?php } ?>
 </div>
 
+<?php if(strlen($relatedFixedElementsSelectors) > 0 || $hasTimer): ?>
 <script type="text/x-magento-init">
     {
         ".cs-salebar-widget": {
             "mgsSalebarWidget": {
-                "timerDate": <?= $hasTimer ? $timerDate : 0; ?>
+                "timerDate": <?= $hasTimer ? $timerDate : 0; ?>,
+                "relatedElementsSelectors": "<?= $relatedFixedElementsSelectors ?>",
+                "fixedElementsBreakpoint": "<?= $fixedElementsBreakpoint ?>"
             }
         }
     }
 </script>
+<?php endif; ?>
