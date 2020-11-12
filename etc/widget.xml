@@ -61,7 +61,6 @@
             </parameter>
             <parameter name="salebar_timer_text_after_countdown" sort_order="60" visible="true" xsi:type="text">
                 <label>Text to show when timer runs out</label>
-                <description>Text shown in button</description>
             </parameter>
         </parameters>
     </widget>
