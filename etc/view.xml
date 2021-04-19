@@ -5,5 +5,7 @@
         <var name="related_fixed_elements"></var>
         <!-- breakpoint below which related_fixed_elements get position:fixed -->
         <var name="fixed_elements_breakpoint">1024</var>
+        <var name="default_background_color">#ffffff</var>
+        <var name="default_text_color">#000000</var>
     </vars>
 </view>

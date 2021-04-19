@@ -1,23 +1,33 @@
 <?php
-$text = $block->getText();
-$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown');
+
 $relatedFixedElementsSelectors = $block->getVar('related_fixed_elements', 'MageSuite_WidgetSalebar');
 $fixedElementsBreakpoint = $block->getVar('fixed_elements_breakpoint', 'MageSuite_WidgetSalebar');
+$defaultBackgroundColor = $block->getVar('default_background_color', 'MageSuite_WidgetSalebar');
+$defaultTextColor = $block->getVar('default_text_color', 'MageSuite_WidgetSalebar');
 
-$backgroundColor = $block->getData('background_color') ? $block->getData('background_color') : '#d63a47';
-$textColor = $block->getData('text_color') ? $block->getData('text_color') : '#fff';
+$backgroundColor = $block->getData('background_color') ? $block->getData('background_color') : $defaultBackgroundColor;
+$textColor = $block->getData('text_color') ? $block->getData('text_color') : $defaultTextColor;
+$cssModifier = $block->getData('css_modifier');
+
+$text = $block->getText();
+$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown');
 
 $isClickable = $block->getData('everything_linked');
 $clickableURL = $block->getData('url');
-
 $isTimerEnabled = $block->getData('use_timer');
 $isTimerProvided = $block->hasData('salebar_timer');
 $timerDate = $block->getFinalTime();
 $hasTimer = $isTimerEnabled && $isTimerProvided && $timerDate;
 
-$cssClass = 'cs-salebar-widget';
+$baseClass = 'cs-salebar-widget';
+$cssClass = $baseClass;
+
 if (!$hasTimer) {
-    $cssClass .= ' '.$cssClass.'--loaded';
+    $cssClass .= ' '. $baseClass. '--loaded';
+}
+
+if ($cssModifier) {
+    $cssClass .= ' '. $baseClass . '--' . $cssModifier;
 }
 
 $cssContentClass = 'cs-salebar-widget__content';

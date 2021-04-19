@@ -4,6 +4,11 @@
     <widget class="MageSuite\WidgetSalebar\Block\Widget\Salebar" id="salebar_widget">
         <label>Salebar</label>
         <description>Widget to display salebar - bar at the top of the site</description>
+        <containers>
+            <container name="salebar.wrapper">
+                <template name="default" value="default" />
+            </container>
+        </containers>
         <parameters>
             <parameter name="salebar_text" sort_order="30" visible="true" xsi:type="block">
                 <label>Text</label>
@@ -61,6 +66,12 @@
             </parameter>
             <parameter name="salebar_timer_text_after_countdown" sort_order="60" visible="true" xsi:type="text">
                 <label>Text to show when timer runs out</label>
+            </parameter>
+            <parameter name="css_modifier" sort_order="41" visible="true" xsi:type="text">
+                <label>CSS modifier</label>
+                <description>
+                    <![CDATA[Optional CSS modifier for styling reference]]>
+                </description>
             </parameter>
         </parameters>
     </widget>
