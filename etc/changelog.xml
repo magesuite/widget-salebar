@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
+    <module
+        id="MageSuite_WidgetSalebar"
+        name="MageSuite_WidgetSalebar">
+        <changelog>
+            <tag version="1.1.1" date="2024-05-22">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Widget salebar ttl improvement</overview>
+                    <ticket_id>MGS-5249</ticket_id>
+                </entry>
+            </tag>
+        </changelog>
+    </module>
+</config>

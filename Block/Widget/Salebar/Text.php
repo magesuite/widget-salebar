@@ -2,29 +2,24 @@
 
 namespace MageSuite\WidgetSalebar\Block\Widget\Salebar;
 
-class Text extends \Magento\Backend\Block\Widget\Form\Element {
-
-    /**
-     * @var \Magento\Cms\Model\Wysiwyg\Config
-     */
-    protected $_wysiwygConfig;
-
-    /**
-     * @var Factory
-     */
-    protected $_factoryElement;
+class Text extends \Magento\Backend\Block\Widget\Form\Element
+{
+    protected \Magento\Cms\Model\Wysiwyg\Config $_wysiwygConfig; //phpcs:ignore
+    protected \Magento\Framework\Data\Form\Element\Factory $_factoryElement; //phpcs:ignore
 
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Data\Form\Element\Factory $factoryElement,
-        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig, $data = []
+        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
+        $data = []
     ) {
         $this->_factoryElement = $factoryElement;
         $this->_wysiwygConfig = $wysiwygConfig;
         parent::__construct($context, $data);
     }
 
-    public function prepareElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element) {
+    public function prepareElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
         $editor = $this->_factoryElement->create('editor', ['data' => $element->getData()])
             ->setLabel('')
             ->setForm($element->getForm())
@@ -36,13 +31,16 @@ class Text extends \Magento\Backend\Block\Widget\Form\Element {
         }
 
         $element->setData(
-            'after_element_html', $this->_getAfterElementHtml() . $editor->getElementHtml()
+            'after_element_html',
+            $this->_getAfterElementHtml() . $editor->getElementHtml()
         );
 
         return $element;
     }
 
-    protected function _getAfterElementHtml() {
+    //phpcs:disable
+    protected function _getAfterElementHtml()
+    {
     $html = <<<HTML
         <style>
             .admin__field-control.control .control-value {
@@ -53,5 +51,5 @@ HTML;
 
         return $html;
     }
-
+    //phpcs:enable
 }

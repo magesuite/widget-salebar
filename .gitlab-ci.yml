@@ -1,2 +1,5 @@
 include:
+- file: composer-package.yml
+  project: mageops/gitlab-ci-templates
+  ref: master
 - local: .gitlab/csbot.gitlabci.yml
