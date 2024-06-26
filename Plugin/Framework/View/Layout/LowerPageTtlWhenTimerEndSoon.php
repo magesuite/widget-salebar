@@ -32,7 +32,6 @@ class LowerPageTtlWhenTimerEndSoon
         }
 
         $secondsToNearestVisibilityChange = $salebarVisibilityTimestamp - time();
-
         $existingTtl = $this->response->getHeader('Cache-Control');
 
         if ($existingTtl && preg_match('/max-age=(\d+)/', $existingTtl->getFieldValue(), $matches)) {
@@ -46,7 +45,7 @@ class LowerPageTtlWhenTimerEndSoon
             return $result;
         }
 
-        if ($secondsToNearestVisibilityChange < $ttlFromConfig) {
+        if ($secondsToNearestVisibilityChange > time() && $secondsToNearestVisibilityChange < $ttlFromConfig) {
             $this->response->setPublicHeaders($secondsToNearestVisibilityChange);
         }
 
