@@ -29,7 +29,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     public function getText()
     {
-        $text = str_replace(['<p>', '</p>'], ['',''], $this->getData('salebar_text'));
+        $text = str_replace(['<p>', '</p>'], ['',''], $this->getData('salebar_text') ?? '');
         $text = str_replace(self::TIMER_KEYWORD, self::TIMER_DIV_CLASS, $text);
 
         return $this->filter->filter($text);
