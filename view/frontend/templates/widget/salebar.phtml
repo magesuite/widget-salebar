@@ -1,5 +1,9 @@
 <?php
 //phpcs:ignoreFile
+if(!$block->isSalebarActive()) {
+    return;
+}
+
 $relatedFixedElementsSelectors = $block->getVar('related_fixed_elements', 'MageSuite_WidgetSalebar');
 $fixedElementsBreakpoint = $block->getVar('fixed_elements_breakpoint', 'MageSuite_WidgetSalebar');
 $defaultBackgroundColor = $block->getVar('default_background_color', 'MageSuite_WidgetSalebar');
@@ -10,7 +14,7 @@ $textColor = $block->getData('text_color') ? $block->getData('text_color') : $de
 $cssModifier = $block->getData('css_modifier');
 
 $text = $block->getText();
-$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown');
+$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown') ?? $text;
 
 $isClickable = $block->getData('everything_linked');
 $clickableURL = $block->getData('url');

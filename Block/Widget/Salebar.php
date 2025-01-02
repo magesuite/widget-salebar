@@ -49,6 +49,15 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         return $timestamp;
     }
 
+    public function isSalebarActive(): bool
+    {
+        // TODO - implement this method, because it does not correctly compares dates (timezone maybe?)
+        $finalTime = $this->getFinalTime();
+        $currentTime = $this->datetime->gmtTimestamp();
+
+        return $currentTime < $finalTime;
+    }
+
     public function toHtml()
     {
         $output = parent::_toHtml();
