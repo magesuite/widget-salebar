@@ -9,21 +9,14 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     protected $_template = 'widget/salebar.phtml'; //phpcs:ignore
 
-    protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime;
-    protected \Magento\Cms\Model\Template\Filter $filter;
-    protected \Magento\Framework\Registry $registry;
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Cms\Model\Template\Filter $filter,
-        \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
-        \Magento\Framework\Registry $registry,
+        protected \Magento\Cms\Model\Template\Filter $filter,
+        protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
+        protected \Magento\Framework\Registry $registry,
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
-        $this->filter = $filter;
-        $this->datetime = $datetime;
-        $this->registry = $registry;
-
         parent::__construct($context, $data);
     }
 
@@ -51,9 +44,8 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     public function isSalebarActive(): bool
     {
-        // TODO - implement this method, because it does not correctly compares dates (timezone maybe?)
         $finalTime = $this->getFinalTime();
-        $currentTime = $this->datetime->gmtTimestamp();
+        $currentTime = $this->getCurrentTime();
 
         return $currentTime < $finalTime;
     }
@@ -63,5 +55,18 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $output = parent::_toHtml();
 
         return $this->filter->filter($output);
+    }
+
+    protected function getCurrentTime(): \DateTime
+    {
+        $currentTime = $this->datetime->gmtTimestamp();
+        $timezone = $this->scopeConfig->getValue(
+            \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_TIMEZONE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $dateTimeZone = new \DateTimeZone($timezone);
+        $dateTime = new \DateTime('@' . $currentTime);
+        $dateTime->setTimezone($dateTimeZone);
+
+        return $dateTime->getTimestamp();
     }
 }
