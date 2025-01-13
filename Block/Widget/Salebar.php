@@ -57,7 +57,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         return $this->filter->filter($output);
     }
 
-    protected function getCurrentTime(): \DateTime
+    protected function getCurrentTime(): int
     {
         $currentTime = $this->datetime->gmtTimestamp();
         $timezone = $this->scopeConfig->getValue(
@@ -67,6 +67,6 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $dateTime = new \DateTime('@' . $currentTime);
         $dateTime->setTimezone($dateTimeZone);
 
-        return $dateTime->getTimestamp();
+        return $dateTime->getTimestamp(); 
     }
 }
