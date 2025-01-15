@@ -50,7 +50,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         return $currentTime < $finalTime;
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         $output = parent::_toHtml();
 
