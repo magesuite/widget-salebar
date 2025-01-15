@@ -14,7 +14,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         protected \Magento\Cms\Model\Template\Filter $filter,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
         protected \Magento\Framework\Registry $registry,
-        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, //phpcs:ignore
         array $data = []
     ) {
         parent::__construct($context, $data);
