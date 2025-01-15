@@ -67,6 +67,6 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $dateTime = new \DateTime('@' . $currentTime);
         $dateTime->setTimezone($dateTimeZone);
 
-        return $dateTime->getTimestamp(); 
+        return strtotime($dateTime->format('d-m-Y H:i:s')); 
     }
 }
