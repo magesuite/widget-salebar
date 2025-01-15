@@ -9,12 +9,12 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     protected $_template = 'widget/salebar.phtml'; //phpcs:ignore
 
-    public function __construct(
+    public function __construct( //phpcs:ignore
         \Magento\Framework\View\Element\Template\Context $context,
         protected \Magento\Cms\Model\Template\Filter $filter,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
         protected \Magento\Framework\Registry $registry,
-        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, //phpcs:ignore
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
         array $data = []
     ) {
         parent::__construct($context, $data);
