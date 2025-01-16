@@ -44,6 +44,14 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     public function isSalebarActive(): bool
     {
+        $isTimerEnabled = $this->getData('use_timer');
+        $isTimerProvided = $this->hasData('salebar_timer');
+        $timerDate = $this->getFinalTime();
+
+        if (!$isTimerEnabled || !$isTimerProvided || !$timerDate) {
+            return true;
+        }
+        
         $finalTime = $this->getFinalTime();
         $currentTime = $this->getCurrentTime();
 
