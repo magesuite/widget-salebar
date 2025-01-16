@@ -9,21 +9,14 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     protected $_template = 'widget/salebar.phtml'; //phpcs:ignore
 
-    protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime;
-    protected \Magento\Cms\Model\Template\Filter $filter;
-    protected \Magento\Framework\Registry $registry;
-
-    public function __construct(
+    public function __construct( //phpcs:ignore
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Cms\Model\Template\Filter $filter,
-        \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
-        \Magento\Framework\Registry $registry,
+        protected \Magento\Cms\Model\Template\Filter $filter,
+        protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
+        protected \Magento\Framework\Registry $registry,
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
         array $data = []
     ) {
-        $this->filter = $filter;
-        $this->datetime = $datetime;
-        $this->registry = $registry;
-
         parent::__construct($context, $data);
     }
 
@@ -49,10 +42,31 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         return $timestamp;
     }
 
-    public function toHtml()
+    public function isSalebarActive(): bool
+    {
+        $finalTime = $this->getFinalTime();
+        $currentTime = $this->getCurrentTime();
+
+        return $currentTime < $finalTime;
+    }
+
+    public function toHtml(): string
     {
         $output = parent::_toHtml();
 
         return $this->filter->filter($output);
+    }
+
+    protected function getCurrentTime(): int
+    {
+        $currentTime = $this->datetime->gmtTimestamp();
+        $timezone = $this->scopeConfig->getValue(
+            \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_TIMEZONE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $dateTimeZone = new \DateTimeZone($timezone);
+        $dateTime = new \DateTime('@' . $currentTime);
+        $dateTime->setTimezone($dateTimeZone);
+
+        return strtotime($dateTime->format('d-m-Y H:i:s')); 
     }
 }
