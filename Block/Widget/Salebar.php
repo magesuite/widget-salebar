@@ -14,15 +14,25 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         protected \Magento\Cms\Model\Template\Filter $filter,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
         protected \Magento\Framework\Registry $registry,
-        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
-    public function getText()
+    public function getText(): string
     {
-        $text = str_replace(['<p>', '</p>'], ['',''], $this->getData('salebar_text') ?? '');
+        $text = $this->getData('salebar_text');
+
+        if (!$text) {
+            return '';
+        }
+
+        if ($this->isBase64Encoded($text)) {
+           $text = base64_decode($text);
+        }
+
+        $text = str_replace(['<p>', '</p>'], ['',''], $text);
         $text = str_replace(self::TIMER_KEYWORD, self::TIMER_DIV_CLASS, $text);
 
         return $this->filter->filter($text);
@@ -51,7 +61,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         if (!$isTimerEnabled || !$isTimerProvided || !$timerDate) {
             return true;
         }
-        
+
         $finalTime = $this->getFinalTime();
         $currentTime = $this->getCurrentTime();
 
@@ -75,6 +85,21 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $dateTime = new \DateTime('@' . $currentTime);
         $dateTime->setTimezone($dateTimeZone);
 
-        return strtotime($dateTime->format('d-m-Y H:i:s')); 
+        return strtotime($dateTime->format('d-m-Y H:i:s'));
+    }
+
+    protected function isBase64Encoded(string $string): bool
+    {
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $string)) {
+            return false;
+        }
+
+        $decoded = base64_decode($string, true);
+
+        if ($decoded === false || base64_encode($decoded) !== str_replace(["\r", "\n"], '', $string)) {
+            return false;
+        }
+
+        return true;
     }
 }
