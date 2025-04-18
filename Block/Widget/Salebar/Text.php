@@ -26,6 +26,10 @@ class Text extends \Magento\Backend\Block\Widget\Form\Element
             ->setWysiwyg(true)
             ->setConfig($this->_wysiwygConfig->getConfig(['add_variables' => true, 'add_widgets' => true]));
 
+        if ($this->isBase64Encoded($element->getValue())) {
+            $editor->setValue(base64_decode($editor->getValue()));
+        }
+
         if ($element->getRequired()) {
             $editor->addClass('required-entry');
         }
@@ -52,4 +56,19 @@ HTML;
         return $html;
     }
     //phpcs:enable
+
+    protected function isBase64Encoded(string $string): bool
+    {
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $string)) {
+            return false;
+        }
+
+        $decoded = base64_decode($string, true);
+
+        if ($decoded === false || base64_encode($decoded) !== str_replace(["\r", "\n"], '', $string)) {
+            return false;
+        }
+
+        return true;
+    }
 }
