@@ -14,15 +14,21 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         protected \Magento\Cms\Model\Template\Filter $filter,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
         protected \Magento\Framework\Registry $registry,
-        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
-    public function getText()
+    public function getText(): string
     {
-        $text = str_replace(['<p>', '</p>'], ['',''], $this->getData('salebar_text') ?? '');
+        $text = $this->getData('salebar_text');
+
+        if (!$text) {
+            return '';
+        }
+
+        $text = str_replace(['<p>', '</p>'], ['',''], $text);
         $text = str_replace(self::TIMER_KEYWORD, self::TIMER_DIV_CLASS, $text);
 
         return $this->filter->filter($text);
@@ -51,7 +57,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         if (!$isTimerEnabled || !$isTimerProvided || !$timerDate) {
             return true;
         }
-        
+
         $finalTime = $this->getFinalTime();
         $currentTime = $this->getCurrentTime();
 
@@ -75,6 +81,6 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $dateTime = new \DateTime('@' . $currentTime);
         $dateTime->setTimezone($dateTimeZone);
 
-        return strtotime($dateTime->format('d-m-Y H:i:s')); 
+        return strtotime($dateTime->format('d-m-Y H:i:s'));
     }
 }

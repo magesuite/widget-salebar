@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="MageSuite\Frontend\Model\Config\EncodedWidgetParamsConfig">
+        <arguments>
+            <argument name="paramsToEncode" xsi:type="array">
+                <item name="salebar_text" xsi:type="string">salebar_text</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
