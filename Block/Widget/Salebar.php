@@ -42,6 +42,7 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         $salebarVisibilityTimestamp = $this->registry->registry('salebar_timestamp');
 
         if ($salebarVisibilityTimestamp === null || $timestamp < $salebarVisibilityTimestamp) {
+            $this->registry->unregister('salebar_timestamp');
             $this->registry->register('salebar_timestamp', $timestamp);
         }
 
