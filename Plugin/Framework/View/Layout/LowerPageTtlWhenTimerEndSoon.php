@@ -17,7 +17,6 @@ class LowerPageTtlWhenTimerEndSoon
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result)
     {
         $visibilityChangeTimestamp = $this->registry->registry(\MageSuite\WidgetSalebar\Block\Widget\Salebar::VISIBILITY_CHANGE_REGISTRY_KEY);
-
         $currentTtl = $this->getCurrentPublicTtl();
 
         if (empty($visibilityChangeTimestamp) || !$subject->isCacheable() || $currentTtl === null) {
@@ -26,7 +25,13 @@ class LowerPageTtlWhenTimerEndSoon
 
         $secondsToVisibilityChange = $visibilityChangeTimestamp - $this->storeTime->getCurrentTimestamp();
 
-        if ($secondsToVisibilityChange <= 0 || $secondsToVisibilityChange >= $currentTtl) {
+        if ($secondsToVisibilityChange >= $currentTtl) {
+            return $result;
+        }
+
+        if ($secondsToVisibilityChange <= 0) {
+            $this->response->setNoCacheHeaders();
+
             return $result;
         }
 

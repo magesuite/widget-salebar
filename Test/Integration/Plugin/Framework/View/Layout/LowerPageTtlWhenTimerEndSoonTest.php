@@ -28,6 +28,15 @@ class LowerPageTtlWhenTimerEndSoonTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('max-age=600', $this->response->getHeader('Cache-Control')->getFieldValue());
     }
 
+    public function testItDisablesCachingWhenVisibilityChangeHasAlreadyPassed(): void
+    {
+        $this->response->setPublicHeaders(86400);
+
+        $this->runPlugin(self::CURRENT_TIMESTAMP - 1, true);
+
+        $this->assertStringNotContainsString('public', $this->response->getHeader('Cache-Control')->getFieldValue());
+    }
+
     public function testItDoesNotMakeNonCacheablePagePublic(): void
     {
         $this->response->setNoCacheHeaders();

@@ -14,7 +14,7 @@ $textColor = $block->getData('text_color') ? $block->getData('text_color') : $de
 $cssModifier = $block->getData('css_modifier');
 
 $text = $block->isTimerExpired() ? $block->getTextAfterCountdown() : $block->getText();
-$textAfterCountdown = $block->getTextAfterCountdown();
+$textAfterCountdown = $block->getTextAfterCountdown() ?: $text;
 
 $isClickable = $block->getData('everything_linked');
 $clickableURL = $block->getData('url');
@@ -23,6 +23,7 @@ $timerDate = $hasTimer ? $block->getFinalTime() : 0;
 
 $baseClass = 'cs-salebar-widget';
 $cssClass = $baseClass;
+$salebarId = sprintf('%s-%s', $baseClass, md5((string)$block->getNameInLayout()));
 
 if (!$hasTimer) {
     $cssClass .= ' '. $baseClass. '--loaded';
@@ -39,7 +40,7 @@ if ($isClickable) {
 ?>
 
 <link rel="stylesheet" href="<?= $this->getViewFileUrl('css/salebar-widget.css') ?>"/><script>/* defer-ignore */</script>
-<div class="<?= $cssClass; ?>">
+<div id="<?= $salebarId ?>" class="<?= $cssClass; ?>">
     <?php if ($isClickable && $clickableURL) { ?>
         <a href="<?= $clickableURL; ?>" class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
     <?php } else { ?>
@@ -64,7 +65,7 @@ if ($isClickable) {
 <?php if(strlen($relatedFixedElementsSelectors) > 0 || $hasTimer): ?>
 <script type="text/x-magento-init">
     {
-        ".cs-salebar-widget": {
+        "#<?= $salebarId ?>": {
             "mgsSalebarWidget": {
                 "timerDate": <?= $hasTimer ? $timerDate : 0; ?>,
                 "relatedElementsSelectors": "<?= $relatedFixedElementsSelectors ?>",

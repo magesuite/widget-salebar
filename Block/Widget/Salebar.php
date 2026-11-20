@@ -12,6 +12,8 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     protected $_template = 'widget/salebar.phtml'; //phpcs:ignore
 
+    protected ?bool $isTimerExpired = null;
+
     public function __construct( //phpcs:ignore
         \Magento\Framework\View\Element\Template\Context $context,
         protected \Magento\Cms\Model\Template\Filter $filter,
@@ -62,18 +64,18 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
             return false;
         }
 
-        $this->registerVisibilityChange($this->getFinalTime());
+        $this->registerVisibilityChange($this->getDeadline());
 
         return true;
     }
 
     public function isTimerExpired(): bool
     {
-        if (!$this->isTimerConfigured()) {
-            return false;
+        if ($this->isTimerExpired === null) {
+            $this->isTimerExpired = $this->isTimerConfigured() && $this->storeTime->getCurrentTimestamp() >= $this->getDeadline();
         }
 
-        return $this->storeTime->getCurrentTimestamp() >= $this->getFinalTime();
+        return $this->isTimerExpired;
     }
 
     public function toHtml(): string
@@ -85,7 +87,14 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
 
     protected function isTimerConfigured(): bool
     {
-        return $this->getData('use_timer') && $this->getData('salebar_timer') && $this->getFinalTime();
+        return $this->getData('use_timer') && $this->getDeadline() !== null;
+    }
+
+    protected function getDeadline(): ?int
+    {
+        $timerDate = (string)$this->getData('salebar_timer');
+
+        return $timerDate !== '' ? $this->storeTime->getTimestamp($timerDate) : null;
     }
 
     protected function registerVisibilityChange(int $timestamp): void
