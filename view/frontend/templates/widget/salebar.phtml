@@ -13,15 +13,13 @@ $backgroundColor = $block->getData('background_color') ? $block->getData('backgr
 $textColor = $block->getData('text_color') ? $block->getData('text_color') : $defaultTextColor;
 $cssModifier = $block->getData('css_modifier');
 
-$text = $block->getText();
-$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown') ?? $text;
+$text = $block->isTimerExpired() ? $block->getTextAfterCountdown() : $block->getText();
+$textAfterCountdown = $block->getTextAfterCountdown();
 
 $isClickable = $block->getData('everything_linked');
 $clickableURL = $block->getData('url');
-$isTimerEnabled = $block->getData('use_timer');
-$isTimerProvided = $block->hasData('salebar_timer');
-$timerDate = $block->getFinalTime();
-$hasTimer = $isTimerEnabled && $isTimerProvided && $timerDate;
+$hasTimer = $block->isTimerRunning();
+$timerDate = $hasTimer ? $block->getFinalTime() : 0;
 
 $baseClass = 'cs-salebar-widget';
 $cssClass = $baseClass;

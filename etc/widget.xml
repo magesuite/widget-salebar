@@ -67,7 +67,7 @@
             <parameter name="salebar_timer_text_after_countdown" sort_order="60" visible="true" xsi:type="text">
                 <label>Text to show when timer runs out</label>
                 <description>
-                    <![CDATA[This option is deprecated due to CLS, when empty - original text will be shown.]]>
+                    <![CDATA[Replaces the text once the timer runs out. When empty, the salebar is hidden after the timer runs out. Leave %TIMER% out of the text to switch texts at the given time without a visible countdown.]]>
                 </description>
             </parameter>
             <parameter name="css_modifier" sort_order="41" visible="true" xsi:type="text">

@@ -6,49 +6,44 @@ namespace MageSuite\WidgetSalebar\Plugin\Framework\View\Layout;
 
 class LowerPageTtlWhenTimerEndSoon
 {
-    protected \Magento\Framework\App\ResponseInterface $response;
-    protected \Magento\Framework\Registry $registry;
-    protected \Magento\Framework\View\DesignInterface $design;
-    protected \Magento\PageCache\Model\Config $pageConfig;
-
     public function __construct(
-        \Magento\Framework\App\ResponseInterface $response,
-        \Magento\Framework\Registry $registry,
-        \Magento\PageCache\Model\Config $pageConfig
+        protected \Magento\Framework\App\ResponseInterface $response,
+        protected \Magento\Framework\Registry $registry,
+        protected \Magento\PageCache\Model\Config $pageConfig,
+        protected \MageSuite\WidgetSalebar\Model\StoreTime $storeTime
     ) {
-        $this->pageConfig = $pageConfig;
-        $this->registry = $registry;
-        $this->response = $response;
     }
 
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result)
     {
-        $ttlFromConfig = $this->pageConfig->getTtl();
+        $visibilityChangeTimestamp = $this->registry->registry(\MageSuite\WidgetSalebar\Block\Widget\Salebar::VISIBILITY_CHANGE_REGISTRY_KEY);
 
-        $salebarVisibilityTimestamp = $this->registry->registry('salebar_timestamp');
+        $currentTtl = $this->getCurrentPublicTtl();
 
-        if (empty($salebarVisibilityTimestamp)) {
+        if (empty($visibilityChangeTimestamp) || !$subject->isCacheable() || $currentTtl === null) {
             return $result;
         }
 
-        $secondsToNearestVisibilityChange = $salebarVisibilityTimestamp - time();
-        $existingTtl = $this->response->getHeader('Cache-Control');
+        $secondsToVisibilityChange = $visibilityChangeTimestamp - $this->storeTime->getCurrentTimestamp();
 
-        if ($existingTtl && preg_match('/max-age=(\d+)/', $existingTtl->getFieldValue(), $matches)) {
-            $existingTtlValue = (int)$matches[1];
-            if ($existingTtlValue < $ttlFromConfig) {
-                $ttlFromConfig = $existingTtlValue;
-            }
-        }
-
-        if ($ttlFromConfig <= $secondsToNearestVisibilityChange) {
+        if ($secondsToVisibilityChange <= 0 || $secondsToVisibilityChange >= $currentTtl) {
             return $result;
         }
 
-        if ($secondsToNearestVisibilityChange > time() && $secondsToNearestVisibilityChange < $ttlFromConfig) {
-            $this->response->setPublicHeaders($secondsToNearestVisibilityChange);
-        }
+        $this->response->setPublicHeaders($secondsToVisibilityChange);
 
         return $result;
+    }
+
+    protected function getCurrentPublicTtl(): ?int
+    {
+        $cacheControlHeader = $this->response->getHeader('Cache-Control');
+        $cacheControl = $cacheControlHeader ? $cacheControlHeader->getFieldValue() : '';
+
+        if (!preg_match('/\bpublic\b/', $cacheControl) || !preg_match('/\bmax-age=(\d+)/', $cacheControl, $matches)) {
+            return null;
+        }
+
+        return min((int)$this->pageConfig->getTtl(), (int)$matches[1]);
     }
 }

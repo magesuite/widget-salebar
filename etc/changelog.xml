@@ -25,6 +25,13 @@
                     <ticket_id>MGS-5249</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.2.5" date="2026-11-20">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Render text after countdown when timer runs out and lower page TTL before it</overview>
+                    <ticket_id>RK-2550</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
