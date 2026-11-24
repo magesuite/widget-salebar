@@ -14,7 +14,7 @@ $textColor = $block->getData('text_color') ? $block->getData('text_color') : $de
 $cssModifier = $block->getData('css_modifier');
 
 $text = $block->isTimerExpired() ? $block->getTextAfterCountdown() : $block->getText();
-$textAfterCountdown = $block->getTextAfterCountdown() ?: $text;
+$textAfterCountdown = $block->getData('salebar_timer_text_after_countdown') ?? $text;
 
 $isClickable = $block->getData('everything_linked');
 $clickableURL = $block->getData('url');
