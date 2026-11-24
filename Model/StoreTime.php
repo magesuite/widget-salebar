@@ -6,7 +6,7 @@ namespace MageSuite\WidgetSalebar\Model;
 
 class StoreTime
 {
-    public function __construct(
+    public function __construct( // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedFunction
         protected \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
     ) {

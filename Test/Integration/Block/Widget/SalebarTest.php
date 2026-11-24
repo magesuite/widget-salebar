@@ -51,6 +51,19 @@ class SalebarTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(self::TIMER_TIMESTAMP_IN_BERLIN, $this->registry->registry(\MageSuite\WidgetSalebar\Block\Widget\Salebar::VISIBILITY_CHANGE_REGISTRY_KEY));
     }
 
+    #[\Magento\TestFramework\Fixture\Config('general/locale/timezone', 'Europe/Berlin', 'store', 'default')]
+    public function testItKeepsQuotesFromSettingsInsideHtmlAttributes(): void
+    {
+        $salebar = $this->createSalebar(self::TIMER_TIMESTAMP_IN_BERLIN - 1, null);
+        $salebar->setData('css_modifier', 'promo" data-injected="1');
+        $salebar->setData('background_color', '#fff" data-injected="2');
+
+        $html = $salebar->toHtml();
+
+        $this->assertStringNotContainsString('data-injected="1"', $html);
+        $this->assertStringNotContainsString('data-injected="2"', $html);
+    }
+
     protected function createSalebar(int $currentTimestamp, ?string $textAfterCountdown): \MageSuite\WidgetSalebar\Block\Widget\Salebar
     {
         $storeTime = $this->getMockBuilder(\MageSuite\WidgetSalebar\Model\StoreTime::class)

@@ -6,7 +6,7 @@ namespace MageSuite\WidgetSalebar\Plugin\Framework\View\Layout;
 
 class LowerPageTtlWhenTimerEndSoon
 {
-    public function __construct(
+    public function __construct( // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedFunction
         protected \Magento\Framework\App\ResponseInterface $response,
         protected \Magento\Framework\Registry $registry,
         protected \Magento\PageCache\Model\Config $pageConfig,

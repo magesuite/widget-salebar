@@ -33,6 +33,7 @@ if ($cssModifier) {
     $cssClass .= ' '. $baseClass . '--' . $cssModifier;
 }
 
+$contentStyle = sprintf('background-color: %s; color: %s', $backgroundColor, $textColor);
 $cssContentClass = 'cs-salebar-widget__content';
 if ($isClickable) {
     $cssContentClass .= ' '.$cssContentClass.'--clickable';
@@ -40,11 +41,11 @@ if ($isClickable) {
 ?>
 
 <link rel="stylesheet" href="<?= $this->getViewFileUrl('css/salebar-widget.css') ?>"/><script>/* defer-ignore */</script>
-<div id="<?= $salebarId ?>" class="<?= $cssClass; ?>">
+<div id="<?= $escaper->escapeHtmlAttr($salebarId) ?>" class="<?= $escaper->escapeHtmlAttr($cssClass) ?>">
     <?php if ($isClickable && $clickableURL) { ?>
-        <a href="<?= $clickableURL; ?>" class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
+        <a href="<?= $escaper->escapeUrl($clickableURL) ?>" class="<?= $escaper->escapeHtmlAttr($cssContentClass) ?>" style="<?= $escaper->escapeHtmlAttr($contentStyle) ?>">
     <?php } else { ?>
-        <div class="<?= $cssContentClass; ?>" style="background-color: <?= $backgroundColor; ?>; color: <?= $textColor; ?>">
+        <div class="<?= $escaper->escapeHtmlAttr($cssContentClass) ?>" style="<?= $escaper->escapeHtmlAttr($contentStyle) ?>">
     <?php } ?>
 
     <?php if ($hasTimer) { ?>
