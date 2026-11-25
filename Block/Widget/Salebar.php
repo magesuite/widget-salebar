@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\WidgetSalebar\Block\Widget;
 
 class Salebar extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
 {
     public const TIMER_KEYWORD = '%TIMER%';
     public const TIMER_DIV_CLASS = '<span class="cs-salebar-widget__countdown"></span>';
+    public const VISIBILITY_CHANGE_REGISTRY_KEY = 'salebar_timestamp';
 
     protected $_template = 'widget/salebar.phtml'; //phpcs:ignore
+
+    protected ?bool $isTimerExpired = null;
 
     public function __construct( //phpcs:ignore
         \Magento\Framework\View\Element\Template\Context $context,
         protected \Magento\Cms\Model\Template\Filter $filter,
         protected \Magento\Framework\Stdlib\DateTime\DateTime $datetime,
         protected \Magento\Framework\Registry $registry,
-        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        protected \MageSuite\WidgetSalebar\Model\StoreTime $storeTime,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -28,41 +33,49 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
             return '';
         }
 
-        $text = str_replace(['<p>', '</p>'], ['',''], $text);
+        $text = str_replace(['<p>', '</p>'], ['', ''], $text);
         $text = str_replace(self::TIMER_KEYWORD, self::TIMER_DIV_CLASS, $text);
 
         return $this->filter->filter($text);
     }
 
-    public function getFinalTime()
+    public function getTextAfterCountdown(): string
     {
-        $finalDate = $this->getData('salebar_timer');
+        return (string)$this->getData('salebar_timer_text_after_countdown');
+    }
 
-        $timestamp = $this->datetime->gmtTimestamp($finalDate);
-        $salebarVisibilityTimestamp = $this->registry->registry('salebar_timestamp');
-
-        if ($salebarVisibilityTimestamp === null || $timestamp < $salebarVisibilityTimestamp) {
-            $this->registry->unregister('salebar_timestamp');
-            $this->registry->register('salebar_timestamp', $timestamp);
-        }
-
-        return $timestamp;
+    public function getFinalTime(): int
+    {
+        return (int)$this->datetime->gmtTimestamp($this->getData('salebar_timer'));
     }
 
     public function isSalebarActive(): bool
     {
-        $isTimerEnabled = $this->getData('use_timer');
-        $isTimerProvided = $this->hasData('salebar_timer');
-        $timerDate = $this->getFinalTime();
-
-        if (!$isTimerEnabled || !$isTimerProvided || !$timerDate) {
+        if (!$this->isTimerExpired()) {
             return true;
         }
 
-        $finalTime = $this->getFinalTime();
-        $currentTime = $this->getCurrentTime();
+        return $this->getTextAfterCountdown() !== '';
+    }
 
-        return $currentTime < $finalTime;
+    public function isTimerRunning(): bool
+    {
+        if (!$this->isTimerConfigured() || $this->isTimerExpired()) {
+            return false;
+        }
+
+        $this->registerVisibilityChange($this->getDeadline());
+
+        return true;
+    }
+
+    public function isTimerExpired(): bool
+    {
+        if ($this->isTimerExpired === null) {
+            $this->isTimerExpired = $this->isTimerConfigured() && $this->storeTime->getCurrentTimestamp() >= $this->getDeadline();
+        }
+
+        return $this->isTimerExpired;
     }
 
     public function toHtml(): string
@@ -72,16 +85,27 @@ class Salebar extends \Magento\Framework\View\Element\Template implements \Magen
         return $this->filter->filter($output);
     }
 
-    protected function getCurrentTime(): int
+    protected function isTimerConfigured(): bool
     {
-        $currentTime = $this->datetime->gmtTimestamp();
-        $timezone = $this->scopeConfig->getValue(
-            \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_TIMEZONE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $dateTimeZone = new \DateTimeZone($timezone);
-        $dateTime = new \DateTime('@' . $currentTime);
-        $dateTime->setTimezone($dateTimeZone);
+        return $this->getData('use_timer') && $this->getDeadline() !== null;
+    }
 
-        return strtotime($dateTime->format('d-m-Y H:i:s'));
+    protected function getDeadline(): ?int
+    {
+        $timerDate = (string)$this->getData('salebar_timer');
+
+        return $timerDate !== '' ? $this->storeTime->getTimestamp($timerDate) : null;
+    }
+
+    protected function registerVisibilityChange(int $timestamp): void
+    {
+        $registeredTimestamp = $this->registry->registry(self::VISIBILITY_CHANGE_REGISTRY_KEY);
+
+        if ($registeredTimestamp !== null && $registeredTimestamp <= $timestamp) {
+            return;
+        }
+
+        $this->registry->unregister(self::VISIBILITY_CHANGE_REGISTRY_KEY);
+        $this->registry->register(self::VISIBILITY_CHANGE_REGISTRY_KEY, $timestamp);
     }
 }
